@@ -193,11 +193,7 @@
                                                     $roomDisplayName = $roomTypeLabel;
                                                 }
                                             @endphp
-                                            @if($previewRoom)
-                                                <a href="{{ route('rooms.show', $previewRoom) }}" class="group luxury-room-card overflow-hidden border border-[#2a2a2a] bg-[#0f0f0f] shadow-[0_20px_40px_rgba(0,0,0,0.25)] transition duration-300 hover:border-[#c9a77c]/80 flex flex-col">
-                                            @else
-                                                <div class="group luxury-room-card overflow-hidden border border-[#2a2a2a] bg-[#0f0f0f] shadow-[0_20px_40px_rgba(0,0,0,0.25)] transition duration-300 hover:border-[#c9a77c]/80 flex flex-col">
-                                            @endif
+                                            <div class="group luxury-room-card overflow-hidden border border-[#2a2a2a] bg-[#0f0f0f] shadow-[0_20px_40px_rgba(0,0,0,0.25)] transition duration-300 hover:border-[#c9a77c]/80 flex flex-col">
                                                 <div class="relative h-64 overflow-hidden bg-[#111111] flex-shrink-0">
                                                     @if($previewRoom && $previewRoom->image)
                                                         <img src="{{ asset('storage/' . $previewRoom->image) }}" alt="{{ $roomDisplayName }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -218,11 +214,7 @@
                                                         <span class="text-[#c9a77c] font-medium">{{ ucfirst(strtolower($item->name ?? 'Room')) }}</span>
                                                     </div>
                                                 </div>
-                                            @if($previewRoom)
-                                                </a>
-                                            @else
-                                                </div>
-                                            @endif
+                                            </div>
                                         @else
                                             @php
                                                 $roomName = $item->name;
@@ -233,7 +225,7 @@
                                                     $roomDisplayName = ucfirst(strtolower($item->type)) . ' Room';
                                                 }
                                             @endphp
-                                            <a href="{{ route('rooms.show', $item) }}" class="group luxury-room-card overflow-hidden border border-[#2a2a2a] bg-[#0f0f0f] shadow-[0_20px_40px_rgba(0,0,0,0.25)] transition duration-300 hover:border-[#c9a77c]/80 flex flex-col">
+                                            <div class="group luxury-room-card overflow-hidden border border-[#2a2a2a] bg-[#0f0f0f] shadow-[0_20px_40px_rgba(0,0,0,0.25)] transition duration-300 hover:border-[#c9a77c]/80 flex flex-col">
                                                 <div class="relative h-64 overflow-hidden bg-[#111111] flex-shrink-0">
                                                     @if($item->image)
                                                         <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $roomDisplayName }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -254,7 +246,7 @@
                                                         <span class="text-[#c9a77c] font-medium">{{ ucfirst(strtolower($item->type ?? 'Room')) }}</span>
                                                     </div>
                                                 </div>
-                                            </a>
+                                            </div>
                                         @endif
                                     @endforeach
                                 @endif

@@ -89,6 +89,32 @@
             </div>
 
             <aside class="xl:col-span-3 space-y-6">
+                <!-- Room preview card (mirrors Homepage 'ROOMS' card details) -->
+                <div class="group luxury-room-card overflow-hidden border border-[#2a2a2a] bg-[#0f0f0f] shadow-[0_20px_40px_rgba(0,0,0,0.25)] transition duration-300 hover:border-[#c9a77c]/80 mb-4">
+                    <div class="relative h-48 bg-[#111111] flex-shrink-0">
+                        @if($room->image)
+                            <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name ?? $room->type }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        @else
+                            <div class="h-full w-full flex items-center justify-center bg-gradient-to-br from-[#111111] to-[#1a1a1a]">
+                                <span class="text-8xl font-serif uppercase tracking-[0.2em] text-[#c9a77c]/20">{{ strtoupper(substr($room->name ?? $room->type, 0, 1)) }}</span>
+                            </div>
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent"></div>
+                    </div>
+
+                    <div class="p-4">
+                        <h3 class="mt-2 font-serif text-2xl text-[#f5f5f0] leading-tight">{{ $room->name ?? $room->type }}</h3>
+                        <div class="mt-3 flex items-center justify-between">
+                            <div class="flex gap-1" aria-label="5 star rating">
+                                @for($i = 0; $i < 5; $i++)
+                                    <svg class="w-4 h-4 text-[#c9a77c]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                @endfor
+                            </div>
+                            <div class="text-sm text-[#8a8a8a] uppercase tracking-[0.15em]">{{ $room->capacity ?? '—' }} guests</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="luxury-form-card p-6">
                     <h2 class="font-serif text-2xl text-[#f5f5f0] mb-4">Booking Summary</h2>
                     <div class="space-y-4 text-sm text-[#c9c9c9]">

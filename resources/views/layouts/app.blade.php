@@ -111,7 +111,7 @@
         </style>
     </head>
     <body class="font-body antialiased bg-[var(--bg)] text-[var(--fg)]">
-        <div class="min-h-screen bg-[var(--bg)]">
+        <div class="min-h-screen bg-[var(--bg)] pt-16 lg:pt-20">
             @include('layouts.navigation')
 
             <!-- Page Heading -->

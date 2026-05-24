@@ -6,57 +6,6 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
-const togglePassword = (button) => {
-    const targetId = button.getAttribute('data-password-toggle');
-    const passwordInput = document.getElementById(targetId);
-    if (!passwordInput) {
-        return;
-    }
-
-    const isVisible = passwordInput.type === 'text';
-    passwordInput.type = isVisible ? 'password' : 'text';
-    button.setAttribute('aria-label', isVisible ? 'Show password' : 'Hide password');
-
-    const showIcon = button.querySelector('.password-toggle-show');
-    const hideIcon = button.querySelector('.password-toggle-hide');
-    if (showIcon && hideIcon) {
-        showIcon.classList.toggle('hidden', !isVisible);
-        hideIcon.classList.toggle('hidden', isVisible);
-    }
-};
-
-const syncToggleButtonState = (button) => {
-    const targetId = button.getAttribute('data-password-toggle');
-    const input = document.getElementById(targetId);
-    if (!input) {
-        return;
-    }
-
-    const isVisible = input.type === 'text';
-    const showIcon = button.querySelector('.password-toggle-show');
-    const hideIcon = button.querySelector('.password-toggle-hide');
-    if (showIcon && hideIcon) {
-        showIcon.classList.toggle('hidden', isVisible);
-        hideIcon.classList.toggle('hidden', !isVisible);
-    }
-
-    button.setAttribute('aria-label', isVisible ? 'Hide password' : 'Show password');
-};
-
-const initializePasswordToggles = () => {
-    document.querySelectorAll('[data-password-toggle]').forEach(syncToggleButtonState);
-};
-
-const handlePasswordToggleClick = (event) => {
-    const button = event.target.closest('button[data-password-toggle]');
-    if (!button) {
-        return;
-    }
-
-    event.preventDefault();
-    togglePassword(button);
-};
-
 const updatePasswordHelper = (input) => {
     const helper = document.querySelector(`[data-password-helper-for="${input.id}"]`);
     if (!helper) {
@@ -91,14 +40,34 @@ const passwordValidationHandler = (event) => {
     updatePasswordHelper(input);
 };
 
-document.addEventListener('click', handlePasswordToggleClick);
+const handleShowPasswordToggle = (event) => {
+    const checkbox = event.target.closest('input[type="checkbox"][data-show-password-target]');
+    if (!checkbox) {
+        return;
+    }
+
+    const target = document.getElementById(checkbox.dataset.showPasswordTarget);
+    if (!target) {
+        return;
+    }
+
+    target.type = checkbox.checked ? 'text' : 'password';
+};
+
 document.addEventListener('input', passwordValidationHandler);
+document.addEventListener('change', handleShowPasswordToggle);
 
 const initializePage = () => {
-    initializePasswordToggles();
-
-    // Also initialize any helpers for password inputs without toggles
+    // Initialize helpers for password inputs
     document.querySelectorAll('input.password-input').forEach(input => updatePasswordHelper(input));
+    document.querySelectorAll('input[type="checkbox"][data-show-password-target]').forEach(checkbox => {
+        const target = document.getElementById(checkbox.dataset.showPasswordTarget);
+        if (!target) {
+            return;
+        }
+
+        target.type = checkbox.checked ? 'text' : 'password';
+    });
 };
 
 if (document.readyState === 'loading') {

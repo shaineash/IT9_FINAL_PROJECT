@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class PaymentController extends Controller
@@ -63,6 +64,12 @@ class PaymentController extends Controller
             return back()->with('error', 'Cancelled bookings cannot be paid.');
         }
 
+        // Prevent duplicate payment creation
+        if ($booking->payment) {
+            return redirect()->route('admin.payments.process', $booking)
+                ->with('info', 'This booking already has a payment record.');
+        }
+
         $validated = $request->validate([
             'selected_method' => 'required|in:Cash,Credit Card,GCash,Debit Card,PayMaya,Bank Transfer',
             'amount_received' => 'required|numeric|min:0',
@@ -84,28 +91,46 @@ class PaymentController extends Controller
             'Bank Transfer' => 'bank_transfer',
         ];
 
-        $payment = Payment::create([
-            'booking_id' => $booking->id,
-            'user_id' => $booking->user_id,
-            'payment_method' => $methodMap[$validated['selected_method']],
-            'cardholder_name' => $booking->guest_name ?? ($booking->user->name ?? 'Guest'),
-            'card_brand' => $validated['selected_method'],
-            'card_last4' => null,
-            'billing_address' => 'Processed by admin',
-            'amount' => $totalAmount,
-            'status' => 'completed',
-            'transaction_reference' => Str::upper('RCT' . now()->format('YmdHis') . Str::random(4)),
-        ]);
+        // Use transaction to ensure atomicity of payment creation and booking status update
+        $payment = DB::transaction(function () use ($booking, $validated, $totalAmount, $methodMap) {
+            $payment = Payment::create([
+                'booking_id' => $booking->id,
+                'user_id' => $booking->user_id,
+                'payment_method' => $methodMap[$validated['selected_method']],
+                'cardholder_name' => $booking->guest_name ?? ($booking->user->name ?? 'Guest'),
+                'card_brand' => $validated['selected_method'],
+                'card_last4' => null,
+                'billing_address' => 'Processed by admin',
+                'amount' => $totalAmount,
+                'status' => 'completed',
+                // Receipt #: RCPT + 12 random unique digits (required unique across all paid payments)
+                'transaction_reference' => (function () {
+                    do {
+                        $digits = Str::random(12);
+                        $reference = 'RCPT' . $digits; // 4 + 12 digits
+                    } while (Payment::where('transaction_reference', $reference)->exists());
 
-        $booking->update(['status' => 'confirmed']);
+                    return $reference;
+                })(),
+
+            ]);
+
+            // Ensure booking status is confirmed when payment is completed
+            if ($booking->status !== 'confirmed') {
+                $booking->update(['status' => 'confirmed']);
+            }
+
+            return $payment;
+        });
 
         return redirect()->route('admin.payments.process', $booking)
-            ->with([
-                'success' => 'Payment accepted successfully.',
-                'receipt_number' => $payment->transaction_reference,
-                'receipt_method' => $validated['selected_method'],
-                'amount_received' => number_format($amountReceived, 2),
-                'change_amount' => number_format($amountReceived - $totalAmount, 2),
+                ->with([
+                    'success' => 'Payment accepted successfully.',
+                    'receipt_number' => $payment->transaction_reference,
+                    'receipt_method' => $validated['selected_method'],
+                    'amount_received' => number_format($amountReceived, 2),
+                    'change_amount' => number_format($amountReceived - $totalAmount, 2),
+
             ]);
     }
 }

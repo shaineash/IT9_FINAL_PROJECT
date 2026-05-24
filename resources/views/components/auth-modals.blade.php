@@ -87,23 +87,9 @@
                             type="password" 
                             autocomplete="current-password" 
                             required 
-                            class="block w-full pl-11 pr-14 py-3.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] transition-all duration-300 hover:border-[#3a3a3a]"
+                            class="block w-full pl-11 pr-4 py-3.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] transition-all duration-300 hover:border-[#3a3a3a]"
                             placeholder="••••••••"
                         >
-                        <button type="button"
-                                data-password-toggle="login-password"
-                                aria-label="Show password"
-                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-[#8a8a8a] hover:text-[#c9a77c] transition-colors">
-                            <svg class="password-toggle-show w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                            <svg class="password-toggle-hide hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.052 10.052 0 012.223-3.607m2.3-1.844A9.969 9.969 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.02 10.02 0 01-4.56 5.37" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
-                            </svg>
-                        </button>
                     </div>
                     @error('password')
                         <p class="mt-1 text-xs text-red-400 ml-1 flex items-center gap-1.5">
@@ -290,24 +276,10 @@
                                 id="reg-admin-code" 
                                 name="admin_code" 
                                 type="password" 
-                                class="block w-full pl-11 pr-14 py-3.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] transition-all duration-300 hover:border-[#3a3a3a]"
+                                class="block w-full pl-11 pr-4 py-3.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] transition-all duration-300 hover:border-[#3a3a3a]"
                                 placeholder="Enter admin code"
                                 value="{{ old('admin_code') }}"
                             >
-                            <button type="button"
-                                    data-password-toggle="reg-admin-code"
-                                    aria-label="Show password"
-                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-[#8a8a8a] hover:text-[#c9a77c] transition-colors">
-                                <svg class="password-toggle-show w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                <svg class="password-toggle-hide hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.052 10.052 0 012.223-3.607m2.3-1.844A9.969 9.969 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.02 10.02 0 01-4.56 5.37" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
-                                </svg>
-                            </button>
                         </div>
                         @error('admin_code')
                             <p class="mt-1 text-xs text-red-400 ml-1 flex items-center gap-1.5">
@@ -336,23 +308,9 @@
                                 type="password" 
                                 autocomplete="new-password" 
                                 required 
-                                class="block w-full pl-11 pr-14 py-3.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] transition-all duration-300 hover:border-[#3a3a3a]"
+                                class="block w-full pl-11 pr-4 py-3.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] transition-all duration-300 hover:border-[#3a3a3a]"
                                 placeholder="••••••••"
                             >
-                            <button type="button"
-                                    data-password-toggle="reg-password"
-                                    aria-label="Show password"
-                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-[#8a8a8a] hover:text-[#c9a77c] transition-colors">
-                                <svg class="password-toggle-show w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                <svg class="password-toggle-hide hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.052 10.052 0 012.223-3.607m2.3-1.844A9.969 9.969 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.02 10.02 0 01-4.56 5.37" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
-                                </svg>
-                            </button>
                         </div>
                         @error('password')
                             <p class="mt-1 text-xs text-red-400 ml-1 flex items-center gap-1.5">
@@ -380,23 +338,9 @@
                                 name="password_confirmation" 
                                 type="password" 
                                 required 
-                                class="block w-full pl-11 pr-14 py-3.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] transition-all duration-300 hover:border-[#3a3a3a]"
+                                class="block w-full pl-11 pr-4 py-3.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] transition-all duration-300 hover:border-[#3a3a3a]"
                                 placeholder="••••••••"
                             >
-                            <button type="button"
-                                    data-password-toggle="reg-password-confirm"
-                                    aria-label="Show password"
-                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-[#8a8a8a] hover:text-[#c9a77c] transition-colors">
-                                <svg class="password-toggle-show w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                <svg class="password-toggle-hide hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.052 10.052 0 012.223-3.607m2.3-1.844A9.969 9.969 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.02 10.02 0 01-4.56 5.37" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
-                                </svg>
-                            </button>
                         </div>
                         @error('password_confirmation')
                             <p class="mt-1 text-xs text-red-400 ml-1 flex items-center gap-1.5">

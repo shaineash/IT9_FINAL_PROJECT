@@ -47,10 +47,13 @@
                             <th class="px-4 py-4">Guest</th>
                             <th class="px-4 py-4">Room #</th>
                             <th class="px-4 py-4">Room Type</th>
+                            <th class="px-4 py-4">Check-in</th>
+                            <th class="px-4 py-4">Check-out</th>
                             <th class="px-4 py-4">Amount</th>
                             <th class="px-4 py-4">Payment Method</th>
                             <th class="px-4 py-4">Payment Date</th>
-                            <th class="px-4 py-4">Status</th>
+                            <th class="px-4 py-4">Booking Status</th>
+                            <th class="px-4 py-4">Payment Status</th>
                             <th class="px-4 py-4">Action</th>
                         </tr>
                     </thead>
@@ -58,15 +61,22 @@
                         @forelse($bookings as $booking)
                             <tr class="transition hover:bg-[#0f1728]/80">
                                 <td class="px-4 py-4 text-[#f5f5f0]">{{ $booking->payment->transaction_reference ?? 'PENDING' }}</td>
-                                <td class="px-4 py-4 text-[#8a8a8a]">{{ $booking->id }}</td>
+                                <td class="px-4 py-4 text-[#8a8a8a]">#{{ $booking->id }}</td>
                                 <td class="px-4 py-4 text-[#f5f5f0]">{{ $booking->guest_name ?? ($booking->user->name ?? 'Guest') }}</td>
                                 <td class="px-4 py-4 text-[#8a8a8a]">#{{ $booking->room->room_number ?? '—' }}</td>
                                 <td class="px-4 py-4 text-[#f5f5f0]">{{ $booking->room->type ?? '—' }}</td>
+                                <td class="px-4 py-4 text-[#8a8a8a]">{{ $booking->check_in->format('M d, Y') }}</td>
+                                <td class="px-4 py-4 text-[#8a8a8a]">{{ $booking->check_out->format('M d, Y') }}</td>
                                 <td class="px-4 py-4 text-[#c9a77c]">₱{{ number_format($booking->total_price, 2) }}</td>
-                                <td class="px-4 py-4 text-[#8a8a8a]">{{ $booking->payment ? ucfirst($booking->payment->payment_method) : 'Not Paid' }}</td>
-                                <td class="px-4 py-4 text-[#8a8a8a]">{{ optional($booking->payment?->created_at)->format('Y-m-d H:i') ?? '—' }}</td>
+                                <td class="px-4 py-4 text-[#8a8a8a]">{{ $booking->payment ? ucfirst(str_replace('_', ' ', $booking->payment->payment_method)) : '—' }}</td>
+                                <td class="px-4 py-4 text-[#8a8a8a]">{{ optional($booking->payment?->created_at)->format('M d, Y H:i') ?? '—' }}</td>
                                 <td class="px-4 py-4">
-                                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $booking->payment ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500' }}">{{ $booking->payment ? 'Paid' : 'Not Paid' }}</span>
+                                    <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold {{ $booking->status === 'confirmed' ? 'bg-green-500/10 text-green-500' : ($booking->status === 'pending' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-blue-500/10 text-blue-500') }}">
+                                        {{ ucfirst(str_replace('_', ' ', $booking->status)) }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold {{ $booking->payment ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500' }}">{{ $booking->payment ? 'Paid' : 'Pending' }}</span>
                                 </td>
                                 <td class="px-4 py-4">
                                     <a href="{{ route('admin.payments.process', $booking) }}" class="inline-flex rounded-full {{ $booking->payment ? 'bg-[#78972d]' : 'bg-[#c9a77c]' }} px-3 py-2 text-xs font-semibold text-[#0f0f0f] transition hover:bg-[#e8d5a7]">{{ $booking->payment ? 'Receipt' : 'Process' }}</a>
@@ -74,7 +84,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="px-4 py-12 text-center text-[#8a8a8a]">No confirmed bookings or payment records found.</td>
+                                <td colspan="13" class="px-4 py-12 text-center text-[#8a8a8a]">No confirmed bookings or payment records found.</td>
                             </tr>
                         @endforelse
                     </tbody>

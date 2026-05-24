@@ -76,19 +76,14 @@
                                 name="password"
                                 type="password"
                                 required
-                                class="block w-full px-4 py-3.5 pr-12 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] focus:ring-2 focus:ring-[#c9a77c]/20 transition-all duration-300 hover:border-[#3a3a3a]"
+                                class="block w-full px-4 py-3.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] focus:ring-2 focus:ring-[#c9a77c]/20 transition-all duration-300 hover:border-[#3a3a3a] password-input"
                                 placeholder="Enter password"
                             >
-                            <button
-                                type="button"
-                                onclick="togglePassword('password')"
-                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#8a8a8a] hover:text-[#c9a77c] transition-colors duration-200"
-                            >
-                                <svg id="password-eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                </svg>
-                            </button>
+                        </div>
+                        <div class="mt-3 flex items-center gap-3 text-sm text-[#8a8a8a]">
+                            <input id="show-password-admin-create" type="checkbox" data-show-password-target="password"
+                                class="h-4 w-4 rounded border-[#8a8a8a] bg-[#1a1a1a] text-[#c9a77c] focus:ring-[#c9a77c]" />
+                            <label for="show-password-admin-create" class="select-none">Show Password</label>
                         </div>
                         @error('password')
                             <p class="mt-1 text-xs text-red-400 ml-1">{{ $message }}</p>
@@ -106,19 +101,14 @@
                                 name="password_confirmation"
                                 type="password"
                                 required
-                                class="block w-full px-4 py-3.5 pr-12 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] focus:ring-2 focus:ring-[#c9a77c]/20 transition-all duration-300 hover:border-[#3a3a3a]"
+                                class="block w-full px-4 py-3.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-xl text-[#f5f5f0] placeholder-[#4a4a4a] focus:outline-none focus:border-[#c9a77c] focus:ring-2 focus:ring-[#c9a77c]/20 transition-all duration-300 hover:border-[#3a3a3a] password-input"
                                 placeholder="Confirm password"
                             >
-                            <button
-                                type="button"
-                                onclick="togglePassword('password_confirmation')"
-                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#8a8a8a] hover:text-[#c9a77c] transition-colors duration-200"
-                            >
-                                <svg id="password_confirmation-eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                </svg>
-                            </button>
+                        </div>
+                        <div class="mt-3 flex items-center gap-3 text-sm text-[#8a8a8a]">
+                            <input id="show-password-admin-create-confirm" type="checkbox" data-show-password-target="password_confirmation"
+                                class="h-4 w-4 rounded border-[#8a8a8a] bg-[#1a1a1a] text-[#c9a77c] focus:ring-[#c9a77c]" />
+                            <label for="show-password-admin-create-confirm" class="select-none">Show Password</label>
                         </div>
                         @error('password_confirmation')
                             <p class="mt-1 text-xs text-red-400 ml-1">{{ $message }}</p>
@@ -171,23 +161,5 @@
         </div>
     </div>
 
-    <script>
-        function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            const icon = document.getElementById(fieldId + '-eye-icon');
-
-            if (field.type === 'password') {
-                field.type = 'text';
-                icon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
-                `;
-            } else {
-                field.type = 'password';
-                icon.innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                `;
-            }
-        }
-    </script>
+    
 </x-app-layout>

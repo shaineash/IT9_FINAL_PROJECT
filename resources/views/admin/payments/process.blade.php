@@ -59,10 +59,90 @@
         <div id="payment-panel" class="space-y-6">
             <div class="rounded-[32px] border border-[#2a2a2a] bg-[#121212]/90 p-6 shadow-[0_40px_120px_-70px_rgba(0,0,0,0.9)]">
                 <div class="mb-6 rounded-[24px] border border-[#2a2a2a] bg-[#121212] p-5">
-                    <p class="text-xs uppercase tracking-[0.35em] text-[#c9a77c]/80">Payment Processing</p>
-                    <h1 class="mt-3 text-3xl font-semibold text-[#f5f5f0]">For: {{ $booking->guest_name ?? $booking->user->name ?? 'Guest' }}</h1>
-                    <p class="mt-2 text-sm text-[#8a8a8a]">Use the form below to process a guest payment, verify the received amount, and print the receipt.</p>
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.35em] text-[#c9a77c]/80">Payment Processing</p>
+                            <h1 class="mt-3 text-3xl font-semibold text-[#f5f5f0]">For: {{ $booking->guest_name ?? $booking->user->name ?? 'Guest' }}</h1>
+                            <p class="mt-2 text-sm text-[#8a8a8a]">Use the form below to process a guest payment, verify the received amount, and print the receipt.</p>
+                        </div>
+
+                        @php
+                            $isPaid = ($booking->payment && $booking->payment->status === 'completed');
+                            $paymentMethodLabel = $booking->payment ? ucfirst(str_replace('_', ' ', $booking->payment->payment_method)) : null;
+                            $receiptNumber = session('receipt_number', $booking->payment->transaction_reference ?? null);
+                            $amountPaid = session('amount_received', $booking->payment->amount ?? null);
+                            $changePaid = session('change_amount', '0.00');
+                        @endphp
+
+                        <div class="flex items-center gap-3">
+                            <span class="inline-flex rounded-full px-4 py-2 text-xs font-semibold tracking-wide border border-[#2a2a2a] {{ $isPaid ? 'bg-green-500/10 text-green-400' : 'bg-yellow-500/10 text-yellow-400' }}">
+                                {{ $isPaid ? 'PAID' : 'PENDING' }}
+                            </span>
+
+                        @if($isPaid)
+                                <button type="button"
+                                        id="open-receipt-modal"
+                                        class="inline-flex items-center justify-center rounded-full border border-[#c9a77c] bg-[#c9a77c]/10 px-4 py-2 text-sm font-semibold text-[#c9a77c] transition hover:bg-[#c9a77c]/20">
+                                    [ Receipt ]
+                                </button>
+                            @endif
+                        </div>
+
+                        @if($isPaid)
+                            <div id="receipt-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[#0f0f0f]/70 px-4 py-6 opacity-0 pointer-events-none transition-opacity duration-300">
+                                <div class="w-full max-w-md rounded-lg overflow-hidden border border-[#e7d8c4] bg-white shadow-[0_32px_120px_-60px_rgba(0,0,0,0.18)]">
+                                    <div class="bg-[#c9a77c] px-6 py-4">
+                                        <div class="flex items-center justify-between">
+                                            <p class="text-sm font-semibold text-[#0f0f0f] uppercase tracking-wider">RECEIPT</p>
+                                            <button id="receipt-modal-close-btn" type="button" class="text-[#0f0f0f] text-xl font-bold hover:opacity-80">✕</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-[#121212] px-6 py-8 space-y-5">
+                                        <div class="text-center">
+                                            <p class="text-xs uppercase tracking-[0.35em] text-[#c9a77c]/90">Receipt #</p>
+                                            <p id="receipt-number" class="mt-2 text-2xl font-semibold text-[#f5f5f0]">{{ $receiptNumber ?? 'RCPT' . str_pad($booking->id, 5, '0', STR_PAD_LEFT) }}</p>
+                                        </div>
+
+                                        <div class="space-y-3 text-sm">
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-semibold text-[#c9a77c]">Guest:</span>
+                                                <span class="text-[#f5f5f0]">{{ $booking->guest_name ?? $booking->user->name ?? 'Guest' }}</span>
+                                            </div>
+
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-semibold text-[#c9a77c]">Amount Paid:</span>
+                                                <span class="text-[#f5f5f0]">₱{{ $amountPaid !== null ? $amountPaid : number_format($booking->payment->amount ?? $booking->total_price, 2) }}</span>
+                                            </div>
+
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-semibold text-[#c9a77c]">Change:</span>
+                                                <span class="text-[#f5f5f0]">₱{{ $changePaid }}</span>
+                                            </div>
+
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-semibold text-[#c9a77c]">Method:</span>
+                                                <span class="text-[#f5f5f0]">{{ session('receipt_method', $paymentMethodLabel ?? '—') }}</span>
+                                            </div>
+
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-semibold text-[#c9a77c]">Date Paid:</span>
+                                                <span class="text-[#f5f5f0]">{{ optional($booking->payment?->created_at)->format('M d, Y') ?? now()->format('M d, Y') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-white px-6 py-4 text-right border-t border-[#e7d8c4]">
+                                        <button id="receipt-modal-ok" type="button" class="inline-flex items-center justify-center rounded-lg border border-[#c9a77c] bg-white px-8 py-2 text-base font-semibold text-[#0f0f0f] transition hover:bg-[#c9a77c]/20">OK</button>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                        </div>
+
+                    </div>
                 </div>
+
 
                 <div class="space-y-5">
                     <div class="rounded-3xl border border-[#2a2a2a] bg-[#111111] p-5">
@@ -206,7 +286,34 @@
             updateSelectedMethod(selectedMethod);
 
             const paymentSuccessModal = document.getElementById('payment-success-modal');
+
+            const receiptModal = document.getElementById('receipt-modal');
+            if (receiptModal) {
+                const openReceiptModal = () => {
+                    receiptModal.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
+                    receiptModal.classList.add('opacity-100', 'pointer-events-auto');
+                };
+
+                const closeReceiptModal = () => {
+                    receiptModal.classList.remove('opacity-100', 'pointer-events-auto');
+                    receiptModal.classList.add('opacity-0', 'pointer-events-none');
+                    setTimeout(() => {
+                        receiptModal.classList.add('hidden');
+                        receiptModal.style.display = 'none';
+                    }, 300);
+                };
+
+                document.getElementById('open-receipt-modal')?.addEventListener('click', openReceiptModal);
+                document.getElementById('receipt-modal-ok')?.addEventListener('click', closeReceiptModal);
+                document.getElementById('receipt-modal-close-btn')?.addEventListener('click', closeReceiptModal);
+
+                receiptModal.addEventListener('click', (e) => {
+                    if (e.target === receiptModal) closeReceiptModal();
+                });
+            }
+
             if (paymentSuccessModal) {
+
                 paymentSuccessModal.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
                 paymentSuccessModal.classList.add('opacity-100', 'pointer-events-auto');
 

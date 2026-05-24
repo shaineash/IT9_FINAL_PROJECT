@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class PaymentController extends Controller
@@ -56,20 +57,23 @@ class PaymentController extends Controller
         $last4 = substr($cardNumber, -4);
         $cardBrand = $this->guessCardBrand($cardNumber);
 
-        Payment::create([
-            'booking_id' => $booking->id,
-            'user_id' => Auth::id(),
-            'payment_method' => $validated['payment_method'],
-            'cardholder_name' => $validated['cardholder_name'],
-            'card_brand' => $cardBrand,
-            'card_last4' => $last4,
-            'billing_address' => $validated['billing_address'],
-            'amount' => $booking->total_price,
-            'status' => 'completed',
-            'transaction_reference' => Str::upper('PAY'.Str::random(10)),
-        ]);
+        // Use transaction to ensure atomicity of payment creation and booking status update
+        DB::transaction(function () use ($booking, $validated, $last4, $cardBrand) {
+            Payment::create([
+                'booking_id' => $booking->id,
+                'user_id' => Auth::id(),
+                'payment_method' => $validated['payment_method'],
+                'cardholder_name' => $validated['cardholder_name'],
+                'card_brand' => $cardBrand,
+                'card_last4' => $last4,
+                'billing_address' => $validated['billing_address'],
+                'amount' => $booking->total_price,
+                'status' => 'completed',
+                'transaction_reference' => Str::upper('PAY'.Str::random(10)),
+            ]);
 
-        $booking->update(['status' => 'confirmed']);
+            $booking->update(['status' => 'confirmed']);
+        });
 
         return redirect()->route('user.bookings.show', $booking)
             ->with('success', 'Payment received. Your booking is now confirmed.');

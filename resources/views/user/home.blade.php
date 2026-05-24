@@ -8,7 +8,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-[0.95fr_0.7fr] gap-8 mb-8">
+        <div class="grid grid-cols-1 gap-8 mb-8">
             <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-3xl p-8 shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
                 <div class="flex gap-6 items-center flex-wrap">
                     <div class="relative">
@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 gap-8">
             <!-- Upcoming Bookings -->
             <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
                 <div class="flex items-center justify-between mb-6">

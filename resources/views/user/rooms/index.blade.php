@@ -28,10 +28,19 @@
 
                     @foreach($roomTypes as $roomType)
                         @php
-                            $category = $roomCategories->firstWhere('name', function ($name) use ($roomType) {
-                                return strtoupper($name) === $roomType;
+                            $category = $roomCategories->first(function ($cat) use ($roomType) {
+                                return \App\Models\Room::normalizeType($cat->name ?? '') === $roomType;
                             });
+
                             $previewRoom = $category?->rooms->firstWhere('image', '!=', null) ?? $category?->rooms->first();
+
+                            // FULL DETAILS RULE:
+                            // Consider “full details exist” if there is at least one room record for this type
+                            // that has a non-empty description and/or image.
+                            $hasFullDetails = (bool) ($category && $category->rooms
+                                ->filter(fn ($r) => !empty($r->description) || !empty($r->image))
+                                ->count());
+
                             $roomName = $previewRoom ? $previewRoom->name : ucfirst(strtolower($roomType)) . ' Room';
                             $roomInitial = strtoupper(substr($roomName, 0, 1));
                             $roomDisplayName = preg_replace('/\b(?:Room\s*(?:No\.?\s*)?|#)\s*\d+\b/i', '', $roomName);
@@ -41,7 +50,7 @@
                             }
                         @endphp
 
-                        <a href="{{ $previewRoom ? route('user.rooms.show', $previewRoom) : route('user.rooms.index', ['type' => $roomType]) }}" class="group overflow-hidden rounded-[2rem] border border-[#2a2a2a] bg-[#0f0f0f] shadow-[0_20px_40px_rgba(0,0,0,0.25)] transition duration-300 hover:border-[#c9a77c]/80 no-underline {{ $previewRoom ? '' : 'opacity-80' }}">
+                        <a href="{{ $hasFullDetails && $previewRoom ? route('user.rooms.show', $previewRoom) : route('user.rooms.index') }}" class="group overflow-hidden rounded-[2rem] border border-[#2a2a2a] bg-[#0f0f0f] shadow-[0_20px_40px_rgba(0,0,0,0.25)] transition duration-300 hover:border-[#c9a77c]/80 no-underline {{ $hasFullDetails ? '' : 'opacity-80' }}">
                             <div class="relative h-72 bg-[#111111]">
                                 @if($previewRoom && $previewRoom->image)
                                     <img src="{{ asset('storage/' . $previewRoom->image) }}" alt="{{ $roomDisplayName }}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -61,7 +70,7 @@
                                     @endfor
                                 </div>
                                 <div class="mt-4 text-sm text-[#c9a77c] uppercase tracking-[0.15em]">
-                                    {{ $previewRoom ? 'View Room Details' : 'Coming Soon' }}
+                                    {{ $hasFullDetails ? 'View Room Details' : 'Coming Soon' }}
                                 </div>
                             </div>
                         </a>

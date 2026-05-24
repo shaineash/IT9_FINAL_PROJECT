@@ -48,7 +48,7 @@
 
                 <div>
                     <label for="rooms_available" class="block text-sm font-medium text-[#f5f5f0] mb-2">Room Available</label>
-                    <input type="number" min="1" step="1" name="rooms_available" id="rooms_available" value="{{ old('rooms_available', 1) }}" required
+                    <input type="number" min="1" step="1" name="rooms_available" id="rooms_available" value="{{ old('rooms_available', $room->rooms_available ?? 1) }}" required
                         placeholder="Enter how many rooms exist for this type (e.g. 6)"
                         class="w-full px-4 py-2.5 bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg text-[#f5f5f0] focus:outline-none focus:border-[#c9a77c] focus:ring-1 focus:ring-[#c9a77c] transition-all">
                     <p class="text-[#8a8a8a] text-xs mt-1">This will create that many rooms with sequential room numbers (e.g. 101,102,...). For Presidential rooms the numbering will use PS01, PS02, etc.</p>

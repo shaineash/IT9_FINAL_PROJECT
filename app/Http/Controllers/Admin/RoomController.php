@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Room;
 use App\Models\RoomCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class RoomController extends Controller
@@ -60,113 +61,30 @@ class RoomController extends Controller
 
         $validated['status'] = $validated['status'] ?? 'available';
 
+        $category = null;
         if (! empty($validated['room_category_id'])) {
             $category = RoomCategory::find($validated['room_category_id']);
-            // No room_number to validate since we're generating them automatically
-            // The category validation for room numbers happens during room creation
-            
             $validated['type'] = $category->name;
-        }
-
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('rooms', 'public');
         }
 
         if (! array_key_exists('active', $validated)) {
             $validated['active'] = true;
         }
 
-        // If admin provided a count of rooms, create multiple sequential room records
-        if (! empty($validated['rooms_available'])) {
-            $count = (int) $validated['rooms_available'];
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('rooms', 'public');
+        }
 
-            // Determine prefix based on type (floor mapping)
-            $type = $validated['type'];
-            $prefix = null;
-            $isNumericFloor = false;
+        $count = (int) ($validated['rooms_available'] ?? 1);
 
-            switch (strtolower($type)) {
-                case 'standard':
-                    $prefix = '1';
-                    $isNumericFloor = true;
-                    break;
-                case 'deluxe':
-                    $prefix = '2';
-                    $isNumericFloor = true;
-                    break;
-                case 'suite':
-                    $prefix = '3';
-                    $isNumericFloor = true;
-                    break;
-                case 'presidential':
-                    $prefix = 'PS';
-                    $isNumericFloor = false;
-                    break;
-                default:
-                    // fallback to floor 1 numbering
-                    $prefix = '1';
-                    $isNumericFloor = true;
-            }
+        try {
+            $roomNumbers = $this->generateRoomNumbers($validated['type'], $count, $category);
+        } catch (\RuntimeException $exception) {
+            return back()->withInput()->withErrors(['rooms_available' => $exception->getMessage()]);
+        }
 
-            
-            
-            // find existing highest index for this prefix
-            if ($isNumericFloor) {
-                $like = $prefix . '%';
-                $existing = Room::where('room_number', 'like', $like)->pluck('room_number')->all();
-                $maxIndex = 0;
-                foreach ($existing as $rn) {
-                    if (preg_match('/^' . preg_quote($prefix, '/') . '(\d+)$/', $rn, $m)) {
-                        $idx = (int) $m[1];
-                        if ($idx > $maxIndex) $maxIndex = $idx;
-                    }
-                }
-                $startIndex = $maxIndex + 1;
-                $pad = 2;
-            } else {
-                $like = $prefix . '%';
-                $existing = Room::where('room_number', 'like', $like)->pluck('room_number')->all();
-                $maxIndex = 0;
-                foreach ($existing as $rn) {
-                    if (preg_match('/^' . preg_quote($prefix, '/') . '(\d+)$/', $rn, $m)) {
-                        $idx = (int) $m[1];
-                        if ($idx > $maxIndex) $maxIndex = $idx;
-                    }
-                }
-                $startIndex = $maxIndex + 1;
-                $pad = 2;
-            }
-
-            // ensure category range check if category provided
-            $category = null;
-            if (! empty($validated['room_category_id'])) {
-                $category = RoomCategory::find($validated['room_category_id']);
-            }
-
-            
-            
-            
-            
-            
-            
-            
-            
-            foreach (range(0, $count - 1) as $i) {
-                $index = $startIndex + $i;
-                $suffix = str_pad((string) $index, $pad, '0', STR_PAD_LEFT);
-                $roomNumber = $isNumericFloor ? ($prefix . $suffix) : ($prefix . $suffix);
-
-                // if category defined, ensure generated room number is allowed
-                if ($category) {
-                    if (! in_array($roomNumber, $category->room_numbers, true)) {
-                        return back()->withInput()->withErrors(['rooms_available' => "Generated room number $roomNumber is outside the selected category range."]);
-                    }
-                }
-
-                if (Room::where('room_number', $roomNumber)->exists()) {
-                    return back()->withInput()->withErrors(['rooms_available' => "Generated room number $roomNumber already exists. Please adjust rooms available or rename existing rooms."]);
-                }
-
+        DB::transaction(function () use ($roomNumbers, $validated) {
+            foreach ($roomNumbers as $roomNumber) {
                 $attributes = array_merge($validated, [
                     'room_number' => $roomNumber,
                     'name' => $validated['name'] . ' ' . $roomNumber,
@@ -174,20 +92,69 @@ class RoomController extends Controller
                     'status' => $validated['status'] ?? 'available',
                 ]);
 
-                if ($request->hasFile('image')) {
-                    $attributes['image'] = $request->file('image')->store('rooms', 'public');
-                }
-
                 Room::create($attributes);
             }
+        });
 
-            return redirect()->route('admin.rooms.index')
-                ->with('success', 'Rooms created successfully.');
-        }
-
-        // (rooms are created above in the loop). Should not reach here.
         return redirect()->route('admin.rooms.index')
             ->with('success', 'Rooms created successfully.');
+    }
+
+    /**
+     * Generate sequential room numbers for the requested type.
+     */
+    private function generateRoomNumbers(string $type, int $count, ?RoomCategory $category = null): array
+    {
+        $prefix = $this->determineRoomPrefix($type);
+        $existing = Room::where('room_number', 'like', $prefix . '%')->pluck('room_number')->all();
+
+        $maxIndex = 0;
+        foreach ($existing as $roomNumber) {
+            if (preg_match('/^' . preg_quote($prefix, '/') . '(\d+)$/', $roomNumber, $matches)) {
+                $index = (int) $matches[1];
+                if ($index > $maxIndex) {
+                    $maxIndex = $index;
+                }
+            }
+        }
+
+        $roomNumbers = [];
+        $nextIndex = $maxIndex + 1;
+
+        while (count($roomNumbers) < $count) {
+            $suffix = str_pad((string) $nextIndex, 2, '0', STR_PAD_LEFT);
+            $roomNumber = $prefix . $suffix;
+
+            if ($category && ! in_array($roomNumber, $category->room_numbers, true)) {
+                throw new \RuntimeException("Generated room number {$roomNumber} is outside the selected category range.");
+            }
+
+            if (Room::where('room_number', $roomNumber)->exists()) {
+                $nextIndex++;
+                continue;
+            }
+
+            $roomNumbers[] = $roomNumber;
+            $nextIndex++;
+        }
+
+        return $roomNumbers;
+    }
+
+    private function determineRoomPrefix(string $type): string
+    {
+        switch (strtolower(trim($type))) {
+            case 'standard':
+                return '1';
+            case 'deluxe':
+                return '2';
+            case 'suite':
+                return '3';
+            case 'presidential':
+                return 'PS';
+            default:
+                return '1';
+        }
     }
 
     /**

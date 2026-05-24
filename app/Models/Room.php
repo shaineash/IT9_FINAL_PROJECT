@@ -23,6 +23,7 @@ class Room extends Model
         'image',
         'status',
         'room_number',
+        'rooms_available',
         'room_category_id',
         'active',
     ];
