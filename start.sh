@@ -1,10 +1,13 @@
 #!/bin/bash
 set -e
 
-# Run migrations at runtime (DB is ready by this point)
+# Run migrations
 php artisan migrate --force
 
-# Clear and cache config for production
+# Seed the admin user (safe — uses firstOrCreate, won't duplicate)
+php artisan db:seed --class=AdminUserSeeder --force
+
+# Cache config/routes/views for production
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
