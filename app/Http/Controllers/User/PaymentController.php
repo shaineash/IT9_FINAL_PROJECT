@@ -72,11 +72,15 @@ class PaymentController extends Controller
                 'transaction_reference' => Str::upper('PAY'.Str::random(10)),
             ]);
 
-            $booking->update(['status' => 'confirmed']);
+            // Keep status as pending — admin confirms the booking
+            // Only update if still in initial pending state
+            if ($booking->status === 'pending') {
+                $booking->update(['status' => 'pending']);
+            }
         });
 
         return redirect()->route('user.bookings.show', $booking)
-            ->with('success', 'Payment received. Your booking is now confirmed.');
+            ->with('success', 'Payment received. Your booking is now awaiting confirmation.');
     }
 
     private function guessCardBrand(string $number): string

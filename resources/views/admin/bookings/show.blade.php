@@ -23,7 +23,7 @@
             <p class="text-[#8a8a8a] text-sm mt-1">Booking ID: #{{ $booking->id }}</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <!-- Booking Info -->
             <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
                 <h2 class="font-serif text-xl text-[#c9a77c] mb-4">Booking Information</h2>
@@ -119,9 +119,9 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <!-- Room -->
-                    <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-3xl p-6 min-h-[220px] min-w-0">
+                    <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-3xl p-6">
                         <h2 class="font-serif text-xl text-[#c9a77c] mb-5">Room Details</h2>
                         @if($booking->room)
                             <div class="space-y-4">
@@ -147,7 +147,7 @@
                     </div>
 
                     <!-- Payment -->
-                    <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-3xl p-6 min-h-[220px] min-w-0">
+                    <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-3xl p-6">
                         <h2 class="font-serif text-xl text-[#c9a77c] mb-5">Payment Summary</h2>
                         <div class="space-y-4 text-sm">
                             <div class="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2">

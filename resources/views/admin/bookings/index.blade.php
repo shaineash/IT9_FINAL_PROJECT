@@ -49,8 +49,8 @@
         </div>
 
         <!-- Bookings Table -->
-        <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden">
-            <table class="w-full">
+        <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-x-auto">
+            <table class="w-full min-w-[700px]">
                 <thead>
                     <tr class="border-b border-[#2a2a2a]">
                         <th class="px-6 py-4 text-left text-sm font-medium text-[#c9a77c]">ID</th>
@@ -69,8 +69,14 @@
                         <tr class="border-b border-[#2a2a2a] hover:bg-[#0f0f0f]/50 transition-colors">
                             <td class="px-6 py-4 text-[#8a8a8a] text-sm">#{{ $booking->id }}</td>
                             <td class="px-6 py-4">
-                                <p class="text-[#f5f5f0]">{{ $booking->user->name ?? 'Unknown' }}</p>
-                                <p class="text-[#8a8a8a] text-xs">{{ $booking->user->email ?? '' }}</p>
+                                <p class="text-[#f5f5f0]">{{ $booking->guest_name ?? $booking->user->name ?? 'Unknown' }}</p>
+                                @php
+                                    $displayEmail = $booking->guest_email;
+                                    if (blank($displayEmail) || $displayEmail === 'walkin@example.com') {
+                                        $displayEmail = $booking->user->email ?? '';
+                                    }
+                                @endphp
+                                <p class="text-[#8a8a8a] text-xs">{{ $displayEmail }}</p>
                             </td>
                             <td class="px-6 py-4">
                                 <p class="text-[#f5f5f0]">{{ $booking->room->name ?? 'Unknown' }}</p>

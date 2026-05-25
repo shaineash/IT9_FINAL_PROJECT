@@ -23,9 +23,27 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="user_id" class="block text-sm font-medium text-[#f5f5f0] mb-2">Guest</label>
+                    <label for="guest_name" class="block text-sm font-medium text-[#f5f5f0] mb-2">Guest Name <span class="text-red-400">*</span></label>
+                    <input type="text" name="guest_name" id="guest_name" value="{{ old('guest_name') }}" required
+                        placeholder="Full name of the guest"
+                        class="w-full px-4 py-3 bg-[#0f0f0f] border border-[#2a2a2a] rounded-3xl text-[#f5f5f0] focus:outline-none focus:border-[#c9a77c] focus:ring-1 focus:ring-[#c9a77c] transition-all">
+                    @error('guest_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
+                    <label for="guest_email" class="block text-sm font-medium text-[#f5f5f0] mb-2">Guest Email</label>
+                    <input type="email" name="guest_email" id="guest_email" value="{{ old('guest_email') }}"
+                        placeholder="Guest email address (optional)"
+                        class="w-full px-4 py-3 bg-[#0f0f0f] border border-[#2a2a2a] rounded-3xl text-[#f5f5f0] focus:outline-none focus:border-[#c9a77c] focus:ring-1 focus:ring-[#c9a77c] transition-all">
+                    @error('guest_email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="user_id" class="block text-sm font-medium text-[#f5f5f0] mb-2">Linked Account <span class="text-[#8a8a8a] font-normal">(optional)</span></label>
                     <select name="user_id" id="user_id" class="w-full px-4 py-3 bg-[#0f0f0f] border border-[#2a2a2a] rounded-3xl text-[#f5f5f0] focus:outline-none focus:border-[#c9a77c] focus:ring-1 focus:ring-[#c9a77c] transition-all">
-                        <option value="">Select a guest (optional)</option>
+                        <option value="">Walk-in / No account</option>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
                                 {{ $user->name }} ({{ $user->email }})

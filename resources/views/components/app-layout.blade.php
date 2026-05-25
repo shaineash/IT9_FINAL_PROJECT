@@ -82,6 +82,38 @@
                 box-shadow: 0 0 0 3px rgba(201, 167, 124, 0.3);
             }
 
+            /* Luxury form components used across booking/payment pages */
+            .luxury-form-card {
+                background: #111111;
+                border: 1px solid #2a2a2a;
+                border-radius: 1.5rem;
+                padding: 1.5rem;
+            }
+
+            .luxury-form-label {
+                font-size: 0.75rem;
+                font-weight: 500;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: #8a8a8a;
+            }
+
+            .luxury-form-select {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                border-radius: 1.5rem;
+                font-size: 0.875rem;
+                color: #f5f5f0;
+                border: 1px solid #3b3b3b;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+            .luxury-form-select:focus {
+                border-color: #c9a77c;
+                box-shadow: 0 0 0 1px #c9a77c;
+            }
+
             /* Reduced motion */
             @media (prefers-reduced-motion: reduce) {
                 *, *::before, *::after {

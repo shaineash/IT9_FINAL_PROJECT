@@ -91,16 +91,17 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'nullable|exists:users,id',
-            'guest_name' => 'required|string|max:255',
-            'room_type' => 'required|string|max:100',
-            'room_number' => 'required|string|max:50',
-            'contact_number' => 'nullable|string|max:50',
-            'breakfast_offer' => 'nullable|string|in:no_breakfast,with_breakfast',
-            'check_in' => 'required|date|after_or_equal:today',
-            'check_out' => 'required|date|after:check_in',
+            'user_id'          => 'nullable|exists:users,id',
+            'guest_name'       => 'required|string|max:255',
+            'guest_email'      => 'nullable|email|max:255',
+            'room_type'        => 'required|string|max:100',
+            'room_number'      => 'required|string|max:50',
+            'contact_number'   => 'nullable|string|max:50',
+            'breakfast_offer'  => 'nullable|string|in:no_breakfast,with_breakfast',
+            'check_in'         => 'required|date|after_or_equal:today',
+            'check_out'        => 'required|date|after:check_in',
             'number_of_guests' => 'required|integer|min:1',
-            'special_request' => 'nullable|string|max:500',
+            'special_request'  => 'nullable|string|max:500',
         ]);
 
         $room = Room::active()
@@ -138,16 +139,16 @@ class BookingController extends Controller
 
         $userId = $validated['user_id'] ?? auth()->id();
         $booking = Booking::create([
-            'user_id' => $userId,
-            'room_id' => $room->id,
-            'guest_name' => $validated['guest_name'] ?? 'Walk-in Guest',
-            'guest_email' => isset($validated['user_id']) ? null : 'walkin@example.com',
-            'contact_number' => $validated['contact_number'] ?? null,
-            'check_in' => $validated['check_in'],
-            'check_out' => $validated['check_out'],
+            'user_id'          => $userId,
+            'room_id'          => $room->id,
+            'guest_name'       => $validated['guest_name'],
+            'guest_email'      => $validated['guest_email'] ?? auth()->user()->email,
+            'contact_number'   => $validated['contact_number'] ?? null,
+            'check_in'         => $validated['check_in'],
+            'check_out'        => $validated['check_out'],
             'number_of_guests' => $validated['number_of_guests'],
-            'total_price' => $totalPrice,
-            'status' => 'confirmed',
+            'total_price'      => $totalPrice,
+            'status'           => 'confirmed',
             'special_requests' => $validated['special_request'] ?? null,
         ]);
 

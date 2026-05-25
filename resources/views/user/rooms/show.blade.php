@@ -125,46 +125,22 @@
                                 @error('number_of_guests') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                             </label>
 
-                            <div class="space-y-2">
-                                <p class="text-sm text-[#8a8a8a] uppercase tracking-[0.2em]">Room Number</p>
-                                <button id="toggle-room-numbers" type="button" class="w-full inline-flex items-center justify-between rounded-3xl border border-[#2a2a2a] bg-[#121212] px-4 py-3 text-left text-[#f5f5f0] hover:border-[#c9a77c] transition-colors">
-                                    <span>Select Room Number</span>
-                                    <span id="toggle-room-numbers-icon" class="text-[#c9a77c]">+</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div id="room-number-grid" class="space-y-4 hidden">
-                            <p class="text-[#8a8a8a] text-sm">Choose an available room number below. Unavailable rooms are faded and cannot be selected.</p>
-                            <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                                @php
-                                    $selectedRoomId = old('selected_room_id', $selectedRoomId ?? null);
-                                    $bookedRoomIds = $bookings->pluck('room_id')->all();
-                                @endphp
-
-                                @foreach($roomNumbers as $roomNumber)
-                                    @php
-                                        $roomEntry = $typeRooms->get($roomNumber);
-                                        $isBooked = $roomEntry && in_array($roomEntry->id, $bookedRoomIds);
-                                        $isAvailable = $roomEntry && $roomEntry->status === 'available' && ! $isBooked;
-                                        $isSelected = $selectedRoomId == ($roomEntry?->id);
-                                    @endphp
-
-                                    <label class="relative block rounded-3xl border p-4 text-left transition-all duration-300 ease-in-out {{ $isAvailable ? 'border-[#2a2a2a] bg-[#111111] hover:border-[#c9a77c] hover:shadow-[0_0_30px_rgba(201,167,124,0.15)]' : 'border-[#2a2a2a] bg-[#151515] opacity-70 cursor-not-allowed' }} {{ $isSelected ? 'border-[#c9a77c] shadow-[0_0_25px_rgba(201,167,124,0.18)]' : '' }}">
-                                        <input type="radio" name="selected_room_id" value="{{ $roomEntry?->id }}" class="peer sr-only" {{ $isAvailable ? '' : 'disabled' }} {{ $isSelected ? 'checked' : '' }}>
-
-                                        <div class="flex items-center justify-between gap-3">
-                                            <div>
-                                                <div class="text-lg font-semibold text-[#f5f5f0]">{{ $roomNumber }}</div>
-                                                <div class="text-xs mt-1 {{ $isAvailable ? 'text-[#c9a77c]' : 'text-[#8a8a8a]' }}">{{ $isAvailable ? 'Available' : ($roomEntry ? 'Unavailable' : 'Unavailable') }}</div>
-                                            </div>
-                                            <span class="text-[11px] uppercase tracking-[0.25em] {{ $isAvailable ? 'text-[#c9a77c]' : 'text-[#8a8a8a]' }}">{{ $isAvailable ? 'Select' : 'Locked' }}</span>
-                                        </div>
-                                        <div class="pointer-events-none absolute inset-0 rounded-3xl border-2 border-transparent peer-checked:border-[#c9a77c]"></div>
-                                    </label>
-                                @endforeach
-                            </div>
-                            @error('selected_room_id') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror
+                            <label class="block text-sm font-medium text-[#f5f5f0]">
+                                <span class="text-[#8a8a8a] mb-2 block">Room Number</span>
+                                <select name="selected_room_id"
+                                    class="w-full px-4 py-3 bg-[#0f0f0f] border border-[#2a2a2a] rounded-3xl text-[#f5f5f0] focus:outline-none focus:border-[#c9a77c] focus:ring-1 focus:ring-[#c9a77c] transition-all">
+                                    <option value="">Auto-select available room</option>
+                                    @foreach($typeRooms as $roomNumber => $roomEntry)
+                                        @if($roomEntry->status === 'available')
+                                            <option value="{{ $roomEntry->id }}"
+                                                {{ old('selected_room_id', $selectedRoomId) == $roomEntry->id ? 'selected' : '' }}>
+                                                {{ $roomNumber }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                @error('selected_room_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            </label>
                         </div>
 
                         <label class="block text-sm font-medium text-[#f5f5f0]">
@@ -208,16 +184,6 @@
     </div>
 
     <script>
-        const toggleButton = document.getElementById('toggle-room-numbers');
-        const roomGrid = document.getElementById('room-number-grid');
-        const toggleIcon = document.getElementById('toggle-room-numbers-icon');
-
-        if (toggleButton && roomGrid) {
-            toggleButton.addEventListener('click', () => {
-                const isOpen = !roomGrid.classList.contains('hidden');
-                roomGrid.classList.toggle('hidden');
-                toggleIcon.textContent = isOpen ? '+' : '−';
-            });
-        }
+        // no-op
     </script>
 </x-app-layout>

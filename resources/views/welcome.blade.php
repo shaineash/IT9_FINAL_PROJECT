@@ -240,7 +240,11 @@
             z-index: 2;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 80px;
+            padding: 0 24px;
+        }
+
+        @media (min-width: 768px) {
+            .hero-content { padding: 0 80px; }
         }
 
         .hero-badge {
@@ -712,263 +716,187 @@
             transform: translateY(0);
         }
 
-        /* Reserve Now Section */
-        .reserve-now-section {
+        /* ── Homepage Room Preview Cards ── */
+        .rooms-preview-section {
             position: relative;
-            padding: 120px 0;
+            z-index: 1;
+            padding: 100px 0 120px;
             background: var(--bg);
-            overflow: hidden;
         }
 
-        .reserve-now-section::before {
+        .rooms-preview-section::before {
             content: '';
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(ellipse 80% 50% at 50% 20%, rgba(232, 213, 183, 0.04) 0%, transparent 50%),
-                radial-gradient(ellipse 60% 40% at 100% 80%, rgba(26, 35, 50, 0.06) 0%, transparent 50%);
+                radial-gradient(ellipse 70% 40% at 50% 0%, rgba(232, 213, 183, 0.05) 0%, transparent 60%);
             pointer-events: none;
         }
 
-        .section-title-reserve {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(48px, 8vw, 80px);
+        .rooms-preview-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .rooms-preview-label {
+            display: inline-block;
+            font-size: 11px;
             font-weight: 600;
-            text-align: center;
-            margin-bottom: 16px;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 18px;
+        }
+
+        .rooms-preview-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 600;
             color: var(--fg);
-            opacity: 0;
-            transform: translateY(30px);
-            animation: titleSlide 1s ease forwards 0.3s;
+            letter-spacing: -0.01em;
         }
 
-        .section-subtitle-reserve {
-            font-size: 18px;
-            font-weight: 400;
-            color: var(--fg-muted);
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto 80px;
-            line-height: 1.6;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: subtitleFade 1s ease forwards 0.5s;
-        }
-
-        /* Room Showcase */
-        .room-showcase {
-            position: relative;
-            overflow-x: auto;
-            overflow-y: hidden;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            margin-bottom: 80px;
-        }
-
-        .room-showcase::-webkit-scrollbar {
-            display: none;
-        }
-
-        .room-grid {
+        .rooms-preview-grid {
             display: flex;
-            gap: 28px;
-            padding: 0 48px;
-            min-width: max-content;
-            align-items: stretch;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .room-card {
-            flex: 0 0 360px;
-            width: 360px;
+        .room-preview-card {
+            flex: 1 1 180px;
+            max-width: 240px;
+            min-width: 160px;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(135deg, var(--card) 0%, rgba(26, 26, 26, 0.95) 100%);
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 44px 32px 40px;
+            background: linear-gradient(160deg, #1a1a1a 0%, #141414 100%);
             border: 1px solid var(--border);
             border-radius: 20px;
+            position: relative;
             overflow: hidden;
-            transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             opacity: 0;
-            transform: translateY(28px);
-            animation: cardSlide 0.8s ease forwards;
+            transform: translateY(30px);
+            animation: previewCardIn 0.7s ease forwards;
         }
 
-        .room-card:nth-child(1) { animation-delay: 0.1s; }
-        .room-card:nth-child(2) { animation-delay: 0.2s; }
-        .room-card:nth-child(3) { animation-delay: 0.3s; }
-        .room-card:nth-child(4) { animation-delay: 0.4s; }
-        .room-card:nth-child(5) { animation-delay: 0.5s; }
+        .room-preview-card:nth-child(1) { animation-delay: 0.1s; }
+        .room-preview-card:nth-child(2) { animation-delay: 0.22s; }
+        .room-preview-card:nth-child(3) { animation-delay: 0.34s; }
+        .room-preview-card:nth-child(4) { animation-delay: 0.46s; }
 
-        @keyframes cardSlide {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes previewCardIn {
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .room-card:hover {
-            border-color: var(--border-accent);
-            box-shadow:
-                0 20px 60px rgba(0, 0, 0, 0.4),
-                0 0 40px var(--accent-glow);
-            transform: translateY(-12px) scale(1.02);
+        /* top gold accent line */
+        .room-preview-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 2px;
+            transition: transform 0.5s ease;
         }
 
-        .room-image {
-            position: relative;
-            width: 100%;
-            height: 320px;
-            overflow: hidden;
-        }
-
-        .room-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-
-        .room-card:hover .room-image img {
-            transform: scale(1.1);
-        }
-
-        .room-image::after {
+        /* subtle inner glow on hover */
+        .room-preview-card::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(232, 213, 183, 0.1) 0%, transparent 60%);
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232, 213, 183, 0.06) 0%, transparent 70%);
             opacity: 0;
-            transition: opacity 0.6s ease;
+            transition: opacity 0.5s ease;
+            border-radius: 20px;
         }
 
-        .room-card:hover .room-image::after {
+        .room-preview-card:hover {
+            border-color: rgba(232, 213, 183, 0.3);
+            box-shadow:
+                0 24px 60px rgba(0, 0, 0, 0.45),
+                0 0 40px rgba(232, 213, 183, 0.08);
+            transform: translateY(-10px);
+        }
+
+        .room-preview-card:hover::before {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .room-preview-card:hover::after {
             opacity: 1;
         }
 
-        .room-info {
-            flex: 1;
+        .preview-stars {
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 24px;
+            gap: 5px;
+            justify-content: center;
+            margin-bottom: 24px;
         }
 
-        .room-name {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 26px;
-            font-weight: 600;
-            color: var(--fg);
-            margin-bottom: 6px;
-            transition: color 0.3s ease;
-        }
-
-        .room-card:hover .room-name {
-            color: var(--accent);
-        }
-
-        .room-type {
+        .preview-star {
             font-size: 14px;
-            font-weight: 500;
             color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 16px;
+            line-height: 1;
+            transition: transform 0.3s ease;
         }
 
-        .room-price {
-            font-size: 24px;
-            font-weight: 600;
+        .room-preview-card:hover .preview-star {
+            transform: scale(1.15);
+        }
+
+        .preview-room-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 700;
             color: var(--fg);
-            margin-bottom: 16px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            transition: color 0.4s ease;
+            line-height: 1.2;
         }
 
-        .room-price span {
-            font-size: 16px;
-            font-weight: 400;
+        .room-preview-card:hover .preview-room-name {
+            color: var(--accent);
+        }
+
+        .preview-divider {
+            width: 32px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-dark), transparent);
+            margin: 0 auto 12px;
+            transition: width 0.4s ease;
+        }
+
+        .room-preview-card:hover .preview-divider {
+            width: 56px;
+        }
+
+        .preview-room-type {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--fg-subtle);
+            transition: color 0.4s ease;
+        }
+
+        .room-preview-card:hover .preview-room-type {
             color: var(--fg-muted);
         }
 
-        .stars {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 20px;
-        }
 
-        .star {
-            width: 16px;
-            height: 16px;
-            color: var(--accent);
-            fill: currentColor;
-        }
-
-        .star.empty {
-            color: var(--border);
-        }
-
-        /* Reserve Button */
-        .reserve-btn-container {
-            text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: buttonSlide 1s ease forwards 0.7s;
-        }
-
-        @keyframes buttonSlide {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .reserve-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px 64px;
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            cursor: pointer;
-            overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            text-decoration: none;
-        }
-
-        .reserve-btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 50%, var(--accent) 100%);
-            transform: translateY(100%) scaleX(0.8);
-            transform-origin: center;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: -1;
-            border-radius: 14px;
-        }
-
-        .reserve-btn:hover {
-            color: var(--bg);
-            border-color: var(--accent-light);
-            box-shadow: 0 0 50px var(--accent-glow), 0 15px 35px rgba(0, 0, 0, 0.3);
-            transform: translateY(-4px) scale(1.05);
-        }
-
-        .reserve-btn:hover::before {
-            transform: translateY(0) scaleX(1);
-        }
-
-        .reserve-btn:active {
-            transform: scale(0.98) translateY(-2px);
-        }
     </style>
 </head>
 <body>
@@ -992,8 +920,8 @@
                     <span class="font-display text-lg lg:text-xl font-semibold tracking-wider" style="color: var(--accent);">SEIN HELIOS</span>
                 </a>
 
-                <!-- Site Navigation -->
-                <div class="flex flex-wrap items-center justify-end gap-4 lg:gap-6">
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-4 lg:gap-6">
                     <a href="{{ route('home') }}" class="nav-link text-sm font-medium text-[#8a8a8a] hover:text-[#f5f5f0] transition-colors duration-300">HOME</a>
                     <a href="{{ route('rooms.browse') }}" class="nav-link text-sm font-medium text-[#8a8a8a] hover:text-[#f5f5f0] transition-colors duration-300">ROOMS</a>
                     <a href="{{ route('facilities') }}" class="nav-link text-sm font-medium text-[#8a8a8a] hover:text-[#f5f5f0] transition-colors duration-300">FACILITIES</a>
@@ -1008,9 +936,35 @@
                         </a>
                     @endguest
                 </div>
+
+                <!-- Mobile Hamburger -->
+                <button id="mobile-menu-btn" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="Open menu">
+                    <span class="block w-6 h-0.5 bg-[#f5f5f0] transition-all"></span>
+                    <span class="block w-6 h-0.5 bg-[#f5f5f0] transition-all"></span>
+                    <span class="block w-6 h-0.5 bg-[#f5f5f0] transition-all"></span>
+                </button>
             </div>
         </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[#0f0f0f] border-t border-[#2a2a2a] px-6 py-4 space-y-3">
+            <a href="{{ route('home') }}" class="block text-sm font-medium text-[#8a8a8a] hover:text-[#f5f5f0] py-2 transition-colors">HOME</a>
+            <a href="{{ route('rooms.browse') }}" class="block text-sm font-medium text-[#8a8a8a] hover:text-[#f5f5f0] py-2 transition-colors">ROOMS</a>
+            <a href="{{ route('facilities') }}" class="block text-sm font-medium text-[#8a8a8a] hover:text-[#f5f5f0] py-2 transition-colors">FACILITIES</a>
+            <a href="{{ route('about') }}" class="block text-sm font-medium text-[#8a8a8a] hover:text-[#f5f5f0] py-2 transition-colors">ABOUT US</a>
+            @guest
+                <a href="#modal-login" class="block w-full text-center px-5 py-2.5 bg-[#c9a77c] text-[#0f0f0f] text-sm font-medium rounded-lg hover:bg-[#e8d5a7] transition-colors">Sign In</a>
+            @else
+                <a href="{{ url('/dashboard') }}" class="block w-full text-center px-5 py-2.5 bg-[#c9a77c] text-[#0f0f0f] text-sm font-medium rounded-lg hover:bg-[#e8d5a7] transition-colors">Dashboard</a>
+            @endguest
+        </div>
     </nav>
+
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -1041,6 +995,41 @@
         <div class="absolute top-1/4 right-0 w-96 h-96 bg-[var(--accent)] opacity-5 rounded-full blur-3xl -z-10"></div>
         <div class="absolute bottom-1/4 left-0 w-96 h-96 bg-[var(--accent)] opacity-5 rounded-full blur-3xl -z-10"></div>
     </section>
+
+    <!-- Room Preview Section -->
+    @if(isset($roomCategories) && $roomCategories->count())
+    <section class="rooms-preview-section">
+        <div class="rooms-preview-header fade-in">
+            <span class="rooms-preview-label">Accommodations</span>
+            <h2 class="rooms-preview-title">Our Rooms &amp; Suites</h2>
+        </div>
+
+        <div class="rooms-preview-grid">
+            @foreach($roomCategories as $category)
+            <div class="room-preview-card">
+                <!-- 5-Star Rating -->
+                <div class="preview-stars">
+                    <span class="preview-star">★</span>
+                    <span class="preview-star">★</span>
+                    <span class="preview-star">★</span>
+                    <span class="preview-star">★</span>
+                    <span class="preview-star">★</span>
+                </div>
+
+                <!-- Room Name -->
+                <div class="preview-room-name">{{ $category->name }}</div>
+
+                <!-- Divider -->
+                <div class="preview-divider"></div>
+
+                <!-- Room Type -->
+                <div class="preview-room-type">Room Type: {{ $category->name }}</div>
+            </div>
+            @endforeach
+        </div>
+    </section>
+    @endif
+
     <!-- Auth Modals (Pure CSS - No JavaScript) -->
     <x-auth-modals />
 

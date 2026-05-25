@@ -39,15 +39,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // User Routes
 Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [UserHomeController::class, 'index'])->name('dashboard');
-    Route::resource('bookings', App\Http\Controllers\User\BookingController::class);
 
-    // Room-specific booking flow for authenticated users
+    // Room-specific booking routes MUST come before resource to avoid {booking} capturing 'room'
     Route::get('bookings/room/{room}/create', [App\Http\Controllers\User\BookingController::class, 'create'])
         ->name('bookings.room.create');
     Route::post('bookings/room/{room}', [App\Http\Controllers\User\BookingController::class, 'store'])
         ->name('bookings.room.store');
     Route::post('bookings/{booking}/cancel', [App\Http\Controllers\User\BookingController::class, 'cancel'])
         ->name('bookings.cancel');
+
+    Route::resource('bookings', App\Http\Controllers\User\BookingController::class);
 
     // Payment flow for bookings
     Route::get('bookings/{booking}/payment', [App\Http\Controllers\User\PaymentController::class, 'create'])

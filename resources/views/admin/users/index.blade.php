@@ -14,8 +14,8 @@
         </div>
 
         <!-- Users Table -->
-        <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden">
-            <table class="w-full">
+        <div class="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-x-auto">
+            <table class="w-full min-w-[600px]">
                 <thead>
                     <tr class="border-b border-[#2a2a2a]">
                         <th class="px-6 py-4 text-left text-sm font-medium text-[#c9a77c]">ID</th>

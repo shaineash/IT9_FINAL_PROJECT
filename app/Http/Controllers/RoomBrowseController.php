@@ -10,35 +10,39 @@ class RoomBrowseController extends Controller
 {
     public function index()
     {
-        $roomTypes = ['STANDARD', 'DELUXE', 'SUITE', 'PRESIDENTIAL'];
-
-        $roomCategories = RoomCategory::with(['rooms' => function ($query) {
-            $query->available()->orderBy('room_number');
-        }])
-        ->whereHas('rooms', function ($query) {
-            $query->available();
-        })
-        ->whereRaw('upper(name) in (?, ?, ?, ?)', $roomTypes)
-        ->orderByRaw("FIELD(upper(name), 'STANDARD', 'DELUXE', 'SUITE', 'PRESIDENTIAL')")
-        ->get()
-        ->keyBy(fn ($category) => strtoupper($category->name))
-        ->only($roomTypes)
-        ->values();
-        
-        $uncategorizedRooms = Room::available()
-            ->whereNull('room_category_id')
-            ->orderBy('type')
+        // Group all active rooms by type — works whether or not categories exist
+        $roomGroups = Room::active()
+            ->orderByRaw("CASE upper(type)
+                WHEN 'STANDARD' THEN 1
+                WHEN 'DELUXE' THEN 2
+                WHEN 'SUITE' THEN 3
+                WHEN 'PRESIDENTIAL' THEN 4
+                ELSE 5 END")
             ->orderBy('room_number')
             ->get()
-            ->groupBy(fn ($room) => Room::normalizeType($room->type))
-            ->map(fn ($group) => $group->first())
-            ->values();
+            ->groupBy(fn ($room) => Room::normalizeType($room->type));
 
-        return view('user.rooms.browse', [
-            'roomCategories' => $roomCategories,
-            'uncategorizedRooms' => $uncategorizedRooms,
-            'roomTypes' => $roomTypes,
-        ]);
+        // Attach category metadata if it exists, otherwise derive from rooms
+        $roomTypes = $roomGroups->map(function ($rooms, $typeName) {
+            $category = RoomCategory::whereRaw('upper(name) = ?', [$typeName])->first();
+            $representative = $rooms->first();
+
+            return (object) [
+                'type'            => $typeName,
+                'label'           => ucfirst(strtolower($typeName)),
+                'category'        => $category,
+                'rooms'           => $rooms,
+                'available_rooms' => $rooms->where('status', 'available'),
+                'first_available' => $rooms->firstWhere('status', 'available'),
+                'representative'  => $representative,
+                'price_per_night' => $category?->price_per_night ?? $representative->price_per_night,
+                'capacity'        => $category?->capacity ?? $representative->capacity,
+                'description'     => $category?->description ?? $representative->description,
+                'image'           => $category?->image ?? $representative->image,
+            ];
+        });
+
+        return view('user.rooms.browse', compact('roomTypes'));
     }
 
     public function show(Room $room)
